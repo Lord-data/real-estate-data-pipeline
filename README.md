@@ -31,7 +31,7 @@ This project automates the entire lifecycle of real estate market intelligence:
 
 ## 📐 System Architecture & Workflow Breakdown
 
-![alt text](image.png)
+![alt text](image-3.png)
 
 1. Data Ingestion & Raw Layer (Bronze):
 

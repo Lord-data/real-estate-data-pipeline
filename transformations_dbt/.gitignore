@@ -5,9 +5,14 @@ transformations_dbt/dev.duckdb
 
 # Raw data & Parquet files (Bronze layer)
 # Raw data / Parquet files
+# Exclude all parquet files
 *.parquet
-Renting_pipeline/Bronze/*
-!Renting_pipeline/Bronze/.gitkeep
+**/*.parquet
+Renting_pipeline/Bronze/*.parquet
+
+# Un-ignore gitkeep
+!**/ .gitkeep
+!.gitkeep
 
 # Environment variables & secrets
 scraper/.env

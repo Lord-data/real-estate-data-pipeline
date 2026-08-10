@@ -31,91 +31,7 @@ This project automates the entire lifecycle of real estate market intelligence:
 
 ## 📐 System Architecture & Workflow Breakdown
 
----
-config:
-  layout: elk
----
-flowchart TD
-    %% Node Styles
-    classDef external fill:#f9f9f9,stroke:#333,stroke-width:1px;
-    classDef docker fill:#eef7ff,stroke:#1D63ED,stroke-width:2px;
-    classDef dbt fill:#fff3e6,stroke:#FF6B00,stroke-width:1px;
-    classDef output fill:#e6ffe6,stroke:#009933,stroke-width:2px;
-    classDef pbi fill:#fff2cc,stroke:#d6b656,stroke-width:2px;
-
-    subgraph Source["1. Ingestion & Web Scraping"]
-        direction LR
-        A["Metrocuadrado / Real Estate Portal API"]:::external
-        B["Raw Parquet Files (Bronze/)"]:::external
-        A -->|"Python Scraper"| B
-    end
-
-    subgraph DockerEnv["2. Isolated Processing Environment (Docker Desktop)"]
-        direction TB
-
-        subgraph Pipeline["data-pipeline Service (Python 3.11)"]
-            direction TB
-
-            subgraph DBT_Layer["Data Transformation & Star Schema (dbt + DuckDB)"]
-                direction LR
-                C["Staging Layer<br/>main_staging.staging_renting"]:::dbt
-                D["Silver Layer<br/>main_intermediate.silver"]:::dbt
-                E["Gold Layer - Fact Table<br/>main_mart.fact_renting"]:::dbt
-
-                subgraph Dimensions["Dimensions"]
-                    direction TB
-                    F1["main_mart.dim_geo"]:::dbt
-                    F2["main_mart.dim_feature"]:::dbt
-                    F3["main_mart.dim_date"]:::dbt
-                end
-
-                G{"Data Quality Checks<br/>(schema.yml + integer_checking)"}:::dbt
-
-                B -->|"read_parquet"| C
-                C -->|"dbt run / RapidFuzz"| D
-                D -->|"dbt test"| G
-                D -->|"dbt run"| E
-                D -->|"Dimensions"| F1
-                D -->|"Dimensions"| F2
-                D -->|"Dimensions"| F3
-                F1 --> E
-                F2 --> E
-                F3 --> E
-            end
-
-            DB[("dev.duckdb<br/>Data Warehouse")]:::output
-
-            E --> DB
-            F1 --> DB
-            F2 --> DB
-            F3 --> DB
-        end
-    end
-
-    subgraph Downstream["3. Visualization & CI/CD"]
-        direction LR
-
-        subgraph PowerBI["Power BI Dashboard"]
-            direction TB
-            H["Real Estate Analytics Dashboard"]:::pbi
-            H1["Core Business KPIs:<br/>Total Properties, Median Price, Median Price/m², Median Area, Median Days on Market"]:::pbi
-            H2["Market Dynamics & Ranks:<br/>Price vs. Days on Market, Market Depth, Affordable/Exclusive Neighborhoods"]:::pbi
-            H3["Segmentations & Slicers:<br/>Property Type, City, Neighborhood, Stratum, Price & Status"]:::pbi
-
-            H --> H1
-            H --> H2
-            H --> H3
-        end
-
-        I["GitHub Actions (CI/CD)"]:::external
-        J["Ruff (Linting) & dbt test (Validation)"]:::external
-
-        DB -->|"DuckDB Connector"| H
-        I -->|"Automated Triggers"| J
-        J -.-> DockerEnv
-    end
-
-    class DockerEnv docker;
+![alt text](image.png)
 
 1. Data Ingestion & Raw Layer (Bronze):
 
@@ -178,7 +94,7 @@ Data Quality Checks:
 Clone the repository and navigate into the project root directory:
 
 ```bash
-git clone [https://github.com/your-username/real-estate-data-pipeline.git](https://github.com/your-username/real-estate-data-pipeline.git)
+git clone https://github.com/Lord-data/real-estate-data-pipeline
 cd real-estate-data-pipeline   
 
 2. Environment Configuration

@@ -4,8 +4,12 @@
 transformations_dbt/dev.duckdb
 
 # Raw data & Parquet files (Bronze layer)
+# Raw data / Parquet files
+*.parquet
 Renting_pipeline/Bronze/*
+Renting_pipeline/bronze/*
 !Renting_pipeline/Bronze/.gitkeep
+!Renting_pipeline/bronze/.gitkeep
 
 # Environment variables & secrets
 scraper/.env

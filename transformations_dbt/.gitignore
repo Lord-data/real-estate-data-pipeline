@@ -7,8 +7,6 @@ transformations_dbt/dev.duckdb
 # Raw data / Parquet files
 *.parquet
 Renting_pipeline/Bronze/*
-Renting_pipeline/Bronze/*
-!Renting_pipeline/Bronze/.gitkeep
 !Renting_pipeline/Bronze/.gitkeep
 
 # Environment variables & secrets

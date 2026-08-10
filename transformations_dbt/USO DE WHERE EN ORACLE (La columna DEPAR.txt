@@ -1,0 +1,444 @@
+USO DE WHERE EN ORACLE (La columna DEPARTAMENTO_DOMICILIO es tipo CLOB, por lo tanto se de convertir a str)
+
+SELECT * FROM top10000
+where DBMS_LOB.substr(DEPARTAMENTO_DOMICILIO,1000) = 'ANTIOQUIA'
+fetch first 100 rows only;
+
+
+CREATE TABLE EMPRESAS_10000 AS
+SELECT 
+  TO_NUMBER(DBMS_LOB.SUBSTR(NIT, 100)) AS NIT,
+  DBMS_LOB.SUBSTR(RAZÓN_SOCIAL, 100) AS RAZÓN_SOCIAL,
+  DBMS_LOB.SUBSTR(SUPERVISOR, 100) AS SUPERVISOR,
+  DBMS_LOB.SUBSTR(REGIÓN, 100) AS REGIÓN,
+  DBMS_LOB.SUBSTR(DEPARTAMENTO_DOMICILIO, 100) AS DEPARTAMENTO_DOMICILIO,
+  DBMS_LOB.SUBSTR(CIUDAD_DOMICILIO, 100) AS CIUDAD_DOMICILIO,
+  TO_NUMBER(DBMS_LOB.SUBSTR(CIIU, 100)) AS CIIU,
+  DBMS_LOB.SUBSTR(MACROSECTOR, 100) AS MACROSECTOR,
+  TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(INGRESOS_OPERACIONALES, 100),'$','')) AS INGRESOS_OPERACIONALES,
+  TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(GANANCIA, 100),'$','')) AS GANANCIA,
+  TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(TOTAL_ACTIVOS, 100),'$','')) AS TOTAL_ACTIVOS,
+  TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PASIVOS, 100),'$','')) AS TOTAL_PASIVOS,
+  TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PATRIMONIO, 100),'$','')) AS TOTAL_PATRIMONIO,
+  TO_NUMBER(DBMS_LOB.SUBSTR(AÑO_DE_CORTE, 100)) AS AÑO_DE_CORTE
+FROM TOP10000
+WHERE 
+  REGEXP_LIKE(DBMS_LOB.SUBSTR(NIT, 100), '^[0-9]+$') AND
+  REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(INGRESOS_OPERACIONALES, 100),'$',''),'^[0-9]+(\.[0-9]+)?$') AND
+  REGEXP_LIKE(DBMS_LOB.SUBSTR(CIIU, 100), '^[0-9]+$') AND
+  REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(GANANCIA, 100),'$',''), '^-?[0-9]+(\.[0-9]+)?$') AND
+  REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(TOTAL_ACTIVOS,100),'$',''), '^[0-9]+(\.[0-9]+)?$') AND
+  REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PASIVOS, 100),'$',''),'^[0-9]+(\.[0-9]+)?$') AND
+  REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PATRIMONIO, 100),'$',''),'^-?[0-9]+(\.[0-9]+)?$') AND
+  REGEXP_LIKE(DBMS_LOB.SUBSTR(AÑO_DE_CORTE, 100), '^[0-9]+$');
+
+
+
+CREATE TABLE EMPRESAS_10000 AS
+SELECT 
+  CASE 
+    WHEN REGEXP_LIKE(DBMS_LOB.SUBSTR(NIT, 100), '^[0-9]+$')
+    THEN TO_NUMBER(DBMS_LOB.SUBSTR(NIT, 100))
+    ELSE NULL
+  END AS NIT,
+
+  DBMS_LOB.SUBSTR(RAZÓN_SOCIAL, 100) AS RAZÓN_SOCIAL,
+  DBMS_LOB.SUBSTR(SUPERVISOR, 100) AS SUPERVISOR,
+  DBMS_LOB.SUBSTR(REGIÓN, 100) AS REGIÓN,
+  DBMS_LOB.SUBSTR(DEPARTAMENTO_DOMICILIO, 100) AS DEPARTAMENTO_DOMICILIO,
+  DBMS_LOB.SUBSTR(CIUDAD_DOMICILIO, 100) AS CIUDAD_DOMICILIO,
+
+  CASE 
+    WHEN REGEXP_LIKE(DBMS_LOB.SUBSTR(CIIU, 100), '^[0-9]+$')
+    THEN TO_NUMBER(DBMS_LOB.SUBSTR(CIIU, 100))
+    ELSE NULL
+  END AS CIIU,
+
+  DBMS_LOB.SUBSTR(MACROSECTOR, 100) AS MACROSECTOR,
+
+  CASE 
+    WHEN REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(INGRESOS_OPERACIONALES, 100), '$', ''), '^-?[0-9]+(\.[0-9]+)?$')
+    THEN TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(INGRESOS_OPERACIONALES, 100), '$', ''))
+    ELSE NULL
+  END AS INGRESOS_OPERACIONALES,
+
+  CASE 
+    WHEN REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(GANANCIA, 100), '$', ''), '^-?[0-9]+(\.[0-9]+)?$')
+    THEN TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(GANANCIA, 100), '$', ''))
+    ELSE NULL
+  END AS GANANCIA,
+
+  CASE 
+    WHEN REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(TOTAL_ACTIVOS, 100), '$', ''), '^-?[0-9]+(\.[0-9]+)?$')
+    THEN TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(TOTAL_ACTIVOS, 100), '$', ''))
+    ELSE NULL
+  END AS TOTAL_ACTIVOS,
+
+  CASE 
+    WHEN REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PASIVOS, 100), '$', ''), '^-?[0-9]+(\.[0-9]+)?$')
+    THEN TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PASIVOS, 100), '$', ''))
+    ELSE NULL
+  END AS TOTAL_PASIVOS,
+
+  CASE 
+    WHEN REGEXP_LIKE(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PATRIMONIO, 100), '$', ''), '^-?[0-9]+(\.[0-9]+)?$')
+    THEN TO_NUMBER(REPLACE(DBMS_LOB.SUBSTR(TOTAL_PATRIMONIO, 100), '$', ''))
+    ELSE NULL
+  END AS TOTAL_PATRIMONIO,
+
+  CASE 
+    WHEN REGEXP_LIKE(DBMS_LOB.SUBSTR(AÑO_DE_CORTE, 100), '^[0-9]+$')
+    THEN TO_NUMBER(DBMS_LOB.SUBSTR(AÑO_DE_CORTE, 100))
+    ELSE NULL
+  END AS AÑO_DE_CORTE
+
+FROM TOP10000;
+
+# CANTIDAD DE EMPRESAS POR DEPARTAMENTO CON SU PROMEDIO DE INGRESOS
+SELECT DEPARTAMENTO_DOMICILIO,COUNT(DEPARTAMENTO_DOMICILIO) AS EMPRESAS_XDEPARTAMENTO,AVG(INGRESOS_OPERACIONALES) AS PROMEDIO_INGRESOS
+FROM TOP10000
+WHERE MACROSECTOR = 'MANUFACTURA'
+GROUP BY DEPARTAMENTO_DOMICILIO
+HAVING AVG(INGRESOS_OPERACIONALES)> 0.1
+ORDER BY PROMEDIO_INGRESOS DESC
+FETCH FIRST 10 ROWS ONLY;
+
+# DEPARTAMENTO CON MAYOR CANTIDAD DE EMPRESAS EN EL SECTOR CONSTRUCCIÓN
+SELECT DEPARTAMENTO_DOMICILIO, DEPARTAMENTO_CONSTRUCCIÓN
+FROM (SELECT DEPARTAMENTO_DOMICILIO, COUNT(DEPARTAMENTO_DOMICILIO) AS DEPARTAMENTO_CONSTRUCCIÓN
+      FROM TOP10000
+      WHERE MACROSECTOR = 'CONSTRUCCIÓN'
+      GROUP BY DEPARTAMENTO_DOMICILIO) 
+ORDER BY DEPARTAMENTO_CONSTRUCCIÓN DESC
+FETCH FIRST 1 ROWS ONLY;
+
+# EMPRESAS CON MAYORES INGRESOS AL PROMEDIO DE SU DEPARTAMENTO DEL SECTOR MANUFACTURA
+With promedio AS ( SELECT DEPARTAMENTO_DOMICILIO,AVG(INGRESOS_OPERACIONALES) AS PROMEDIO_DEPARTAMENTO
+FROM TOP10000
+WHERE MACROSECTOR = 'MANUFACTURA'
+GROUP BY DEPARTAMENTO_DOMICILIO)
+
+SELECT t.RAZÓN_SOCIAL,p.departamento_domicilio, t.INGRESOS_OPERACIONALES,p.promedio_departamento
+FROM top10000 t 
+JOIN promedio p
+on t.departamento_domicilio = p.departamento_domicilio
+WHERE INGRESOS_OPERACIONALES > PROMEDIO_DEPARTAMENTO AND t.MACROSECTOR = 'MANUFACTURA'
+ORDER BY INGRESOS_OPERACIONALES DESC
+
+#INGRESOS MAYORES AL PROMEDIO POR DEPARTAMENTO DE SECTOR COMERCIO (CROSS JOIN PARA UNIR TABLAS SIN COLUMNAS RELACIONADAS)
+
+WITH DEPARTAMENTOS AS (SELECT DEPARTAMENTO_DOMICILIO, SUM(INGRESOS_OPERACIONALES) AS TOTAL_INGRESOS_OPERACIONALES
+FROM TOP10000
+WHERE MACROSECTOR = 'COMERCIO'
+GROUP BY DEPARTAMENTO_DOMICILIO),
+
+PROMEDIO AS (SELECT AVG(TOTAL_INGRESOS_OPERACIONALES) AS PROMEDIO_TOTAL
+FROM DEPARTAMENTOS)
+
+SELECT D.DEPARTAMENTO_DOMICILIO, D.TOTAL_INGRESOS_OPERACIONALES
+FROM DEPARTAMENTOS D
+CROSS JOIN PROMEDIO P
+WHERE D.TOTAL_INGRESOS_OPERACIONALES > P.PROMEDIO_TOTAL
+ORDER BY TOTAL_INGRESOS_OPERACIONALES DESC
+
+# TOP 5 DE EMPRESAS POR MACRO SECTOR (ROW_NUMBER)
+
+WITH EMPRESASX_SECTOR AS (SELECT RAZÓN_SOCIAL, MACROSECTOR, INGRESOS_OPERACIONALES,
+row_number() over(partition by MACROSECTOR ORDER BY INGRESOS_OPERACIONALES DESC) AS TOP_EMPRESASXSECTOR
+FROM TOP10000)
+
+SELECT * FROM EMPRESASX_SECTOR
+WHERE TOP_EMPRESASXSECTOR <= 5
+
+# PORCENTAJE DE PARTICIPACIÓN DE EMPRESAS POR SECTOR (FUNCIÓN DE AGREGACIÓN CON VENTANA)
+SELECT RAZÓN_SOCIAL, MACROSECTOR, (INGRESOS_OPERACIONALES/NULLIF(SUM(INGRESOS_OPERACIONALES) OVER(PARTITION BY MACROSECTOR),0))*100 AS PORCENTAJE
+FROM TOP10000
+
+## ACUMULADO DE INGRESOS POR DEPARTAMENTO
+SELECT DEPARTAMENTO_DOMICILIO, RAZÓN_SOCIAL, INGRESOS_OPERACIONALES, 
+SUM(INGRESOS_OPERACIONALES) 
+OVER(PARTITION BY DEPARTAMENTO_DOMICILIO ORDER BY INGRESOS_OPERACIONALES DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS ACUMULACION_DEPARTAMENTO FROM TOP10000
+
+## DIVISIÓN EN 4 PARTES 'IGUALES' DE CADA MACROSECTOR(NTILE)
+
+SELECT RAZÓN_SOCIAL, MACROSECTOR, INGRESOS_OPERACIONALES, 
+NTILE(4) OVER(PARTITION BY MACROSECTOR ORDER BY INGRESOS_OPERACIONALES DESC) AS TOPS_XMACROSECTOR FROM TOP10000
+
+## TOP10 EMPRESAS COLOMBIANAS POR INGRESOS (DENSE_RANK)
+
+WITH EMPRESAS AS (SELECT RAZÓN_SOCIAL, INGRESOS_OPERACIONALES, DENSE_RANK() OVER(ORDER BY INGRESOS_OPERACIONALES DESC) AS EMPRESAS_TOP
+FROM TOP10000)
+
+SELECT * FROM EMPRESAS
+WHERE EMPRESAS_TOP <= 10
+
+## MACROSECTORES POR ENCIMA DEL 80% DEL PROMEDIO GLOBAL
+
+WITH PROMEDIO AS (SELECT MACROSECTOR,
+AVG(INGRESOS_OPERACIONALES) OVER(PARTITION BY MACROSECTOR) PROMEDIO_MACROSECTOR,
+AVG(INGRESOS_OPERACIONALES) OVER() AS PROMEDIO_GLOBAL
+FROM TOP10000)
+
+SELECT DISTINCT(MACROSECTOR),PROMEDIO_MACROSECTOR,PROMEDIO_GLOBAL FROM PROMEDIO
+WHERE (PROMEDIO_MACROSECTOR/PROMEDIO_GLOBAL)> 0.8
+
+## PARETO 80/20 (PORCENTAJE ACUMULADO DE INGRESOS POR MACROSECTOR AL 80%) 
+
+WITH TOPN AS (SELECT RAZÓN_SOCIAL, MACROSECTOR, INGRESOS_OPERACIONALES, SUM(INGRESOS_OPERACIONALES) 
+OVER(PARTITION BY MACROSECTOR ORDER BY INGRESOS_OPERACIONALES DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS INGRESOS_ACU,
+SUM(INGRESOS_OPERACIONALES) OVER(PARTITION BY MACROSECTOR) AS TOTAL_XMACROSECTOR, DENSE_RANK() 
+OVER(PARTITION BY MACROSECTOR ORDER BY INGRESOS_OPERACIONALES DESC) AS RANKING
+FROM TOP10000),
+
+TOP80 AS (SELECT RAZÓN_SOCIAL, MACROSECTOR, INGRESOS_OPERACIONALES, INGRESOS_ACU, TOTAL_XMACROSECTOR,
+(INGRESOS_ACU/TOTAL_XMACROSECTOR)*100 AS PORCENTAJE_ACUMULADO, RANKING
+FROM TOPN
+ORDER BY MACROSECTOR, RANKING)
+
+SELECT * FROM TOP80
+WHERE PORCENTAJE_ACUMULADO <= 80
+
+##DATA LEMUR TWITTER EXERCISE ('EASY')
+
+SELECT (Tweets_per_user) as tweet_bucket, count(*) as users_num 
+FROM(
+SELECT user_id,count(*) as Tweets_per_user FROM tweets
+WHERE YEAR(tweet_date) = 2022
+GROUP BY user_id) AS TABLA
+GROUP BY Tweets_per_user
+
+## DATA LEMUR LINKDLE EXERCISE 2 ('EASY')
+
+SELECT candidate_id
+FROM(
+SELECT candidate_id, count(candidate_id) as num_skills FROM candidates
+WHERE skill IN ('Python','Tableau','PostgreSQL')
+GROUP BY candidate_id
+HAVING num_skills = 3) AS RESULT
+
+## DATA LEMUR EXERCISE 3 ('EASY')
+
+## SELECCIONAR LAS PÁGINAS QUE NO TIENEN ME GUSTAS (MySQL)
+SELECT p.page_id FROM pages p
+LEFT JOIN page_likes l
+ON p.page_id = l.page_id
+WHERE l.page_id ISNULL
+ORDER BY p.page_id
+
+##DATA LEMUR EXERCISE 4 ('EASY')
+
+## SECCIONAR VISTAS PARA MOBILE Y LAPTOP (MySQL)
+
+SELECT
+    SUM(CASE WHEN device_type NOT IN ('phone','tablet') THEN 1 ELSE 0 END) AS laptop_views,
+    SUM(CASE WHEN device_type IN ('phone','tablet') THEN 1 ELSE 0 END) mobile_views
+FROM viewership;
+
+## DATA LEMUR EXERCISE 5  ('EASY')
+## Diferencia de días entre publicaciones (PostgreSQL)
+
+SELECT user_id, 
+DATEDIFF(MAX(DATE(post_date)),MIN(DATE(post_date))) AS days_between
+FROM posts
+WHERE YEAR(post_date) = 2021
+GROUP BY user_id
+HAVING days_between > 1
+
+## DATA LEMUR EXERCISE 6 ('EASY')
+## Número de compañias que han publicado trabajos duplicados
+
+SELECT COUNT(*) AS duplicate_companies
+FROM ( 
+    SELECT company_id, title, description, 
+           COUNT(*) AS duplicate_jobs
+    FROM job_listings
+    GROUP BY company_id, title, description
+    HAVING COUNT(*) > 1
+) AS t;
+
+## DATA LEMUR EXERCISE 7 ('EASY')
+## Número de pedidos completados por CIUDAD_DOMICILIO
+
+SELECT u.city, count(u.city) as total_orders 
+FROM users u
+INNER JOIN trades t 
+on t.user_id = u.user_id
+WHERE t.status = 'Completed'
+GROUP BY u.city
+ORDER BY total_orders DESC
+LIMIT 3
+
+## DATA LEMUR EXERCISE 8 ('EASY')
+## Estrellas promedio por producto
+
+SELECT mth, product_id, ROUND(avg(stars),2) as avg_stars  FROM (
+SELECT product_id, stars, EXTRACT(MONTH FROM submit_date) AS mth
+FROM reviews
+) as t
+GROUP BY mth, product_id
+ORDER BY mth, product_id
+
+## DATA LEMUR EXERCISE 10 ('EASY')
+
+## BALANCE DE DINERO
+
+SELECT account_id,
+       SUM(amount_2) AS final_balance
+FROM (
+    SELECT account_id, 
+           CASE
+               WHEN transaction_type = 'Withdrawal' THEN -amount 
+               ELSE amount 
+           END AS amount_2
+    FROM transactions
+) AS sub
+GROUP BY account_id;
+
+Solución ideal:
+
+SELECT
+  account_id,
+  SUM(
+    CASE 
+      WHEN transaction_type = 'Deposit' THEN amount
+      ELSE -amount 
+    END
+  ) AS final_balance
+FROM transactions
+GROUP BY account_id;
+
+## DATA LEMUR EXERCISE 11 ('EASY')
+## Write a query to calculate the click-through rate (CTR) for the app in 2022
+
+SELECT app_id, 
+ROUND(SUM(CASE WHEN event_type = 'click' Then 1 ELSE 0 END)*1.0
+/SUM(CASE WHEN event_type = 'impression' Then 1 ELSE 0 END)*100,2)
+AS ctr 
+FROM events
+WHERE EXTRACT(YEAR FROM timestamp) = 2022
+GROUP BY app_id
+
+## DATA LEMUR EXERCISE 12 ('EASY')
+
+Write a query to display the user IDs of those who did not confirm their 
+sign-up on the first day, but confirmed on the second day.
+
+WITH TABLA AS (SELECT t.email_id,e.user_id,t.signup_action, 
+DATEDIFF(
+MAX(t.action_date) OVER(PARTITION BY t.email_id),
+MIN(t.action_date) OVER(PARTITION BY t.email_id)) as DELTA_D
+FROM texts t 
+INNER JOIN emails e
+ON t.email_id = e.email_id)
+
+SELECT user_id FROM TABLA
+WHERE DELTA_D = 1 AND signup_action = 'Confirmed'
+
+SOLUCIÓN OFICIAL:
+
+SELECT DISTINCT user_id
+FROM emails 
+INNER JOIN texts
+ON emails.email_id = texts.email_id
+WHERE texts.action_date = DATE_ADD(emails.signup_date, INTERVAL 1 DAY)  
+AND texts.signup_action = 'Confirmed';
+
+## DATA LEMUR EXERCISE 13 ('EASY')
+
+Write a query that outputs the name of each credit card and the difference in the 
+number of issued cards between the month with the highest issuance cards and the 
+lowest issuance. Arrange the results based on the largest disparity.
+
+SELECT card_name, (MAX(issued_amount)-MIN(issued_amount)) AS difference 
+FROM monthly_cards_issued
+GROUP BY card_name
+ORDER BY difference DESC;
+
+## DATA LEMUR EXERCISE 14 ('EASY') (PostgreSQL)
+
+You are trying to find the mean number of items per order on Alibaba, rounded to 1 decimal 
+place using tables which includes information on the count of items in each order
+
+SELECT ROUND(
+  (SUM(order_occurrences*item_count)::numeric / SUM(order_occurrences)::numeric), 
+  1
+) AS avg_items
+FROM items_per_order;
+
+## DATA LEMUR EXERCISE 15 ('EASY') ('MySQL')
+
+Write a query to find the top 3 most profitable drugs sold, and how much profit they made. 
+Assume that there are no ties in the profits. Display the result from the highest to the lowest 
+total profit.
+
+SELECT drug, total_sales-cogs as total_profit
+FROM pharmacy_sales
+ORDER BY total_profit DESC
+LIMIT 3;
+
+## DATA LEMUR EXERCISE 16 ('EASY') ('MySQL')
+
+Write a query to identify the manufacturers associated with the drugs that resulted in losses 
+for CVS Health and calculate the total amount of losses incurred.
+
+SELECT manufacturer, COUNT(drug) AS drug_count, 
+ABS(SUM(total_sales-cogs)) AS total_loss 
+FROM pharmacy_sales
+WHERE total_sales-cogs <0
+GROUP BY manufacturer
+ORDER BY drug_count DESC;
+
+## DATA LEMUR 17 ('EASY') ('MySQL')
+
+Write a query to calculate the total drug sales for each manufacturer. 
+Round the answer to the nearest million and report your results in descending order of total sales
+
+SELECT manufacturer,CONCAT('$',ROUND(SUM(total_sales)/1000000,0),' million') AS sale
+FROM pharmacy_sales
+GROUP BY manufacturer
+ORDER BY SUM(total_sales) DESC;
+
+## DATA LEMUR EXERCISE 18 ('EASY') ('PostgreSQL')
+
+Write a query to find how many UHG policy holders made three, or more calls, 
+assuming each call is identified by the case_id column.
+
+SELECT COUNT(counter) as policy_holder_count FROM
+(SELECT COUNT(policy_holder_id) as counter 
+FROM callers
+GROUP BY policy_holder_id
+HAVING COUNT(policy_holder_id)>=3) AS TABLA;
+
+## DATA LEMUR EXERCISE 19 ('MEDIUM') ('MySQL')
+
+Assume you are given the table below on Uber transactions made by users. 
+Write a query to obtain the third transaction of every user. Output the user id, spend and transaction date.
+
+WITH TABLA AS (SELECT user_id,spend,
+transaction_date, ROW_NUMBER ()
+OVER(PARTITION BY user_id ORDER BY transaction_date ASC) AS TOP
+FROM transactions)
+
+SELECT user_id,spend,transaction_date FROM TABLA
+WHERE TOP = 3;
+
+## DATA LEMUR EXERCISE 20 ('MEDIUM') ('MySQL')
+
+Your manager is keen on understanding the pay distribution and asks you
+to determine the second highest salary among all employees
+
+WITH TABLA AS (SELECT SALARY, DENSE_RANK() OVER(ORDER BY salary DESC) as 
+second_highest_salary
+FROM employee)
+
+SELECT salary as second_highest_salary FROM TABLA
+WHERE second_highest_salary = 2
+
+SOLUCIÓN OFICIAL:
+
+SELECT MAX(salary) AS second_highest_salary
+FROM employee
+WHERE salary < (
+    SELECT MAX(salary)
+    FROM employee
+);

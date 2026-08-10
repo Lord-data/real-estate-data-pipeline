@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: transformation 
+    description: "python model that cleans neighborhoods applying RapidFuzz"
+    config:
+      materialized: table
+
+  - name: silver
+    description: "Renting table with standardized prices and cleaned up"
+    columns:
+      - name: property_id
+        description: "Primary key from property" 
+        tests:
+          - unique # validating duplicated IDs
+          - not_null # records must have an ID  
+
+      - name: rent_value
+        description: "monthly renting prices"
+        tests:
+          - not_null # rent_value must have a price
+          - integer_checking
+
+      - name: rooms
+        description: "number of rooms"
+        tests:
+          - integer_checking
+
+      - name: bathrooms
+        description: "number of bathrooms"  
+        tests:                              
+          - integer_checking
+
+      - name: garages
+        description: "number of parking spaces" 
+        tests:                                  
+          - integer_checking
+
+      - name: total_area
+        description: "total area in square meters" 
+        tests:                                     
+          - integer_checking 
+      
+      - name: administration_value
+        description: "property administration value" 
+        tests:                                       
+          - integer_checking

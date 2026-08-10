@@ -1,0 +1,27 @@
+# ==========================================
+# CONFIGURATION FILES AND CREDENTIALS
+# ==========================================
+*.env
+.env
+scraper/.env
+
+# ==========================================
+# VIRTUAL ENVIRONMENTS AND PYTHON CACHE
+# ==========================================
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# ==========================================
+# DOCKER FILES AND LOCAL LOGS
+# ==========================================
+*.log
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# DBT LOCAL (Logs and compiled target artifacts)
+# ==========================================
+transformations_dbt/logs/
+transformations_dbt/target/

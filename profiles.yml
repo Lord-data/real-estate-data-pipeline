@@ -1,0 +1,15 @@
+transformations_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      # Forzamos la ruta relativa:
+      path: 'transformations_dbt/dev.duckdb'
+      threads: 4
+      plugings:
+          - module: duckdb.connections 
+
+    prod:
+      type: duckdb
+      path: 'C:/Users/doral/OneDrive/Escritorio/Databases/REAL_STATE_PROJECT/transformations_dbt/prod.duckdb'
+      threads: 4

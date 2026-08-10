@@ -1,0 +1,18 @@
+services:
+  data-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: real_estate_pipeline
+    env_file:
+      - scraper/.env 
+    volumes:
+      # Sincroniza la carpeta local de tu PC con la carpeta /app del contenedor
+      # Así, si DuckDB o tu scraper generan archivos, se guardan en tu PC real.
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    # Mantiene el contenedor interactivo para poder mandarle comandos
+    tty: true
+    stdin_open: true

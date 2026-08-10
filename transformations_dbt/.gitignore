@@ -1,0 +1,20 @@
+# Database files
+*.duckdb
+*.duckdb.wal
+transformations_dbt/dev.duckdb
+
+# Raw data & Parquet files (Bronze layer)
+Renting_pipeline/bronze/*
+!Renting_pipeline/bronze/.gitkeep
+
+# Environment variables & secrets
+scraper/.env
+
+# Logs
+*.logs
+
+# Cache & Python files
+__pycache__/
+*.pyc
+.venv/
+.dbt/

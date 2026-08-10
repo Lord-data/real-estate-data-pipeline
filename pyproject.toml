@@ -1,0 +1,21 @@
+[tool.ruff]
+# Directorios donde están únicamente tus scripts de código
+src = ["scraper"]  # <--- Cambia "src" por el nombre de tu carpeta de scripts (ej. "scraper")
+
+# Excluir carpetas automáticas, entornos virtuales o dbt
+exclude = [
+    ".venv",
+    ".vscode",
+    "Data",
+    "Data bases",
+    "hr_pipeline",
+    "logs",
+    "Python",
+    "Renting_pipeline",
+    "transformations_dbt"
+]
+
+[tool.ruff.lint]
+
+select = ["E","F"]
+ignore = ["E501","LOG015","G201","I001","BLE001"]

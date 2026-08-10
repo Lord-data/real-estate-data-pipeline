@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: raw_renting
+    description: "Datos crudos de arriendos en Colombia extraídos de Metrocuadrado"
+    loader: python_script
+    tables:
+      - name: colombia_renting
+        description: "Archivo Parquet unificado de la extracción masiva"
+        # Aquí está el truco: DuckDB leerá el Parquet directamente usando una ruta relativa
+        meta:
+          external_location: "read_parquet('Renting_pipeline/Bronze/*.parquet')"
+          options: 
+            union_by_name = True
